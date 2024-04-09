@@ -87,6 +87,7 @@ export default function Login() {
         <Link to="/contact">联系注册新用户</Link>
       </Form.Item>
       <Link to="/exercise">练习</Link>
+      <Link to="/upload">上传</Link>
     </Form>
 
   )

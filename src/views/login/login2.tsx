@@ -73,8 +73,10 @@ export default function Login2() {
         </Button>
         <Link to="/contact">联系注册新用户</Link>
       </Form.Item>
-      <Link to="/exercise">练习</Link>
-      <Link to="/tmain">老师主页</Link>
+      <Link to="/exercise">练习</Link><br></br>
+      <Link to="/tmain">老师主页</Link><br></br>
+      <Link to="/upload">上传</Link>
+
     </Form>
   )
 }

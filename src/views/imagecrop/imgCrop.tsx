@@ -12,6 +12,7 @@ import { useDebounceEffect } from './useDebounceEffect'
 
 import 'react-image-crop/dist/ReactCrop.css'
 import '../../global/typedef'
+import getRatio from '../../utils/screen'
 // import { ImageProps } from 'antd'
 
 // This is to demonstate how to make and center a % aspect crop
@@ -65,10 +66,16 @@ export default function ImgCrop(imgurl:string) {
   }
 
   function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
-    if (aspect) {
       const { width, height } = e.currentTarget
-      setCrop(centerAspectCrop(width, height, aspect))
-    }
+      setCrop({x:0,y:0,width:width,height:height,unit:'px'})
+      let ratio  = getRatio()
+      console.log('ratio',ratio)
+      // setScale(100/ratio)
+
+    // if (aspect) {
+    //   const { width, height } = e.currentTarget
+    //   setCrop(centerAspectCrop(width, height, aspect))
+    // }
   }
 
   async function onDownloadCropClick() {
@@ -83,7 +90,9 @@ export default function ImgCrop(imgurl:string) {
     // are looking at on screen, remove scaleX + scaleY
     const scaleX = image.naturalWidth / image.width
     const scaleY = image.naturalHeight / image.height
+    console.log('scalex',scaleX,',',scaleY)
 
+    console.log(scaleX,'c',scaleY)
     const offscreen = new OffscreenCanvas(
       completedCrop.width * scaleX,
       completedCrop.height * scaleY,
@@ -107,9 +116,19 @@ export default function ImgCrop(imgurl:string) {
     // You might want { type: "image/jpeg", quality: <0 to 1> } to
     // reduce image size
     const blob = await offscreen.convertToBlob({
-      type: 'image/png',
+      type: 'image/png'
     })
+    function blobToBase64(blob) {
+      return new Promise((resolve, _) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+    }
+    let imgbase64= await blobToBase64(blob)
 
+    console.log(imgbase64)
+    
     if (blobUrlRef.current) {
       URL.revokeObjectURL(blobUrlRef.current)
     }
@@ -147,7 +166,8 @@ export default function ImgCrop(imgurl:string) {
     if (aspect) {
       setAspect(undefined)
     } else {
-      setAspect(16 / 9)
+      setAspect(undefined)
+      // setAspect(16 / 9)
 
       if (imgRef.current) {
         const { width, height } = imgRef.current
@@ -197,7 +217,8 @@ export default function ImgCrop(imgurl:string) {
           crop={crop}
           onChange={(_, percentCrop) => setCrop(percentCrop)}
           onComplete={(c) => setCompletedCrop(c)}
-          aspect={aspect}
+          // aspect={aspect}
+          aspect={undefined}
           // minWidth={400}
           minHeight={100}
           // circularCrop
@@ -226,10 +247,10 @@ export default function ImgCrop(imgurl:string) {
           </div>
           <div>
             <button onClick={onDownloadCropClick}>Download Crop</button>
-            <div style={{ fontSize: 12, color: '#666' }}>
+            {/* <div style={{ fontSize: 12, color: '#666' }}>
               If you get a security error when downloading try opening the
               Preview in a new tab (icon near top right).
-            </div>
+            </div> */}
             <a
               href="#hidden"
               ref={hiddenAnchorRef}
