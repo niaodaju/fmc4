@@ -6,6 +6,7 @@ import Main from '../views/main/main'
 import Contact from '../views/contact'
 import TeacherMain from '../views/teacher/teacherMain'
 import ImageUpload from '../views/uploadExercise/upload'
+import TaskApp from '../views/multi-drag/task-app'
 export default function MRoute() {
   return (
     <Routes>
@@ -15,7 +16,7 @@ export default function MRoute() {
     <Route path = "/main" element = {<AuthLogin><Main/></AuthLogin>}></Route>
     <Route path = "/tmain" element = {<TeacherMain/>}></Route>
     <Route path = "/upload" element = {<ImageUpload></ImageUpload>}></Route>
-
+    <Route path ="/drag" element = {<TaskApp></TaskApp>}></Route>
   </Routes>
   )
 }

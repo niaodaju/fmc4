@@ -9,19 +9,10 @@ import ImgCrop from '../imagecrop/imgCrop';
 import { Modal, List } from "antd";
 import type { ProColumns } from '@ant-design/pro-components';
 import { DragSortTable } from '@ant-design/pro-components';
-import { DragDropContext } from '@hello-pangea/dnd';
-import styled from '@emotion/styled';
-
-
-const Container = styled.div`
-  display: flex;
-  user-select: none;
-`;
-
 // import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 const TeacherMain: React.FC = () => {
   const [imageblob, setImageblob] = useState<Blob[]>([]);
-  const [obj1, setObj1] = useState<any>({ a: 1 });
+  const [obj1,setObj1]= useState<any>({a:1});
 
 
   const handlePaste = async (event: any) => {
@@ -56,58 +47,33 @@ const TeacherMain: React.FC = () => {
   };
 
 
-  const handleClick = async (event: any) => {
-    const b = 33
-    setObj1({ b, })
+  const handleClick = async(event:any) =>{
+    const b=33
+    setObj1({b,})
     setTimeout(() => {
       console.log(obj1)
     }, 0);
   }
-  const handleClick2 = async (event: any) => {
+  const handleClick2 = async(event:any) =>{
     console.log(obj1)
   }
-
-  const handleOnDrageStart = (start: DragStart): void => {
-    const id: string = start.draggableId;
-    const selected: Id | undefined | null = this.state.selectedTaskIds.find(
-      (taskId: Id): boolean => taskId === id,
-    );
-
-    // if dragging an item that is not selected - unselect all items
-    if (!selected) {
-      this.unselectAll();
-    }
-    this.setState({
-      draggingTaskId: start.draggableId,
-    });
-  };
-
-  const handleOnDragEnd = (result: DropResult): void => {
-
-  };
   return (
     <div onPaste={handlePaste}>
       TeacherMain
+      <button onClick={handleClick2}>查看ojb</button>
       <button onClick={handleClick}>上传</button>
-      <DragDropContext
-        onDragStart={handleOnDrageStart}
-        onDragEnd={handleOnDragEnd}
-      >
-        <Container>
-          <ul >
-            {
-              imageblob.map((item, index) => (
-                <li >
-                  <img src={URL.createObjectURL(item)} alt="akdk" />
-                  <ImgCrop imgurl={URL.createObjectURL(item)}></ImgCrop>
-                </li>
-              )
-              )
-            }
+            <ul >
+              {
+                imageblob.map((item, index) => (
+                        <li >
+                          <img src={URL.createObjectURL(item)} alt="akdk" />
+                          <ImgCrop imgurl={URL.createObjectURL(item)}></ImgCrop>
+                        </li>
+                        )
+                )
+              }
 
-          </ul>
-        </Container>
-      </DragDropContext>
+            </ul>
     </div>
   )
 }

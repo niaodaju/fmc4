@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "4.8.3",
+    "@hello-pangea/dnd": "^16.6.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -54,6 +55,12 @@
     ]
   },
   "devDependencies": {
-    "@types/fabric": "^5.3.7"
+    "@atlaskit/css-reset": "6.7.1",
+    "@atlaskit/theme": "12.6.6",
+    "@types/fabric": "^5.3.7",
+    "@emotion/eslint-plugin": "11.11.0",
+    "@emotion/react": "11.11.4",
+    "@emotion/styled": "11.11.0"
+
   }
 }
