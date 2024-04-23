@@ -14,6 +14,8 @@ import type {
 } from '@hello-pangea/dnd';
 import { grid, borderRadius } from '../constants';
 import type { Id, Task as TaskType } from '../types';
+import { Rate, Select } from 'antd';
+import KnowledgePoints from './knowledgePoint';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
 const primaryButton = 0;
@@ -74,10 +76,10 @@ const Container = styled.div<ContainerProps>`
   border-radius: ${borderRadius}px;
   font-size: 18px;
   border: 3px solid ${colors.N90};
+  display: flex;
   ${(props) =>
-    props.isDragging ? `box-shadow: 2px 2px 1px ${colors.N90};` : ''} ${(
-    props,
-  ) => (props.isGhosting ? 'opacity: 0.8;' : '')}
+    props.isDragging ? `box-shadow: 2px 2px 1px ${colors.N90};` : ''}
+  ${(props) => (props.isGhosting ? 'opacity: 0.8;' : '')}
 
   /* needed for SelectionCount */
   position: relative;
@@ -88,7 +90,13 @@ const Container = styled.div<ContainerProps>`
     border-color: ${colors.G200};
   }
 `;
-
+const Handle = styled.div`
+  width: 40px;
+  height: 20px;
+  background-color: orange;
+  border-radius: 4px;
+  margin-right: 8px;
+`;
 const Content = styled.div``;
 
 const size = 30;
@@ -119,7 +127,7 @@ export default class Task extends Component<Props> {
   onKeyDown = (
     event: KeyboardEvent<HTMLDivElement>,
     provided: DraggableProvided,
-    snapshot: DraggableStateSnapshot,
+    snapshot: DraggableStateSnapshot
   ): void => {
     if (event.defaultPrevented) {
       return;
@@ -170,7 +178,7 @@ export default class Task extends Component<Props> {
 
   // Determines if the platform specific toggle selection in group key was used
   wasToggleInSelectionGroupKeyUsed = (
-    event: MouseEvent | KeyboardEvent,
+    event: MouseEvent | KeyboardEvent
   ): boolean => {
     const isUsingWindows = navigator.platform.indexOf('Win') >= 0;
     return isUsingWindows ? event.ctrlKey : event.metaKey;
@@ -196,6 +204,16 @@ export default class Task extends Component<Props> {
 
     toggleSelection(task.id);
   };
+  handleChangeSubject = (value: string) => {
+    console.log(`selected ${value}`);
+  };
+  handleChangeGrade = (value: string) => {
+    console.log(`selected ${value}`);
+  };
+
+  handleChangeChapter = (value: string) => {
+    console.log(`selected ${value}`);
+  };
 
   render(): ReactElement {
     const task: TaskType = this.props.task;
@@ -207,7 +225,7 @@ export default class Task extends Component<Props> {
       <Draggable draggableId={task.id} index={index}>
         {(
           provided: DraggableProvided,
-          snapshot: DraggableStateSnapshot,
+          snapshot: DraggableStateSnapshot
         ): ReactElement => {
           const shouldShowSelection: boolean =
             snapshot.isDragging && selectionCount > 1;
@@ -216,7 +234,7 @@ export default class Task extends Component<Props> {
             <Container
               ref={provided.innerRef}
               {...provided.draggableProps}
-              {...provided.dragHandleProps}
+              // {...provided.dragHandleProps}
               onClick={this.onClick}
               onTouchEnd={this.onTouchEnd}
               onKeyDown={(event: KeyboardEvent<HTMLDivElement>) =>
@@ -226,7 +244,56 @@ export default class Task extends Component<Props> {
               isSelected={isSelected}
               isGhosting={isGhosting}
             >
-              <Content>{task.content}</Content>
+              <Handle {...provided.dragHandleProps}></Handle>
+              <Content>
+                {task.content}
+                <Select
+                  tabIndex="-1"
+                  defaultValue="math"
+                  style={{ width: 120 }}
+                  onChange={this.handleChangeSubject}
+                  options={[
+                    { value: 'math', label: '数学' },
+                    { value: 'phy', label: '物理' },
+                  ]}
+                />
+                <Select
+                  tabIndex="-1"
+                  defaultValue="g7"
+                  style={{ width: 120 }}
+                  onChange={this.handleChangeGrade}
+                  options={[
+                    { value: 'g7', label: '七年级' },
+                    { value: 'g8', label: '八年级' },
+                    { value: 'g9', label: '九年级' },
+                  ]}
+                />
+                <Select
+                  tabIndex="-1"
+                  defaultValue="ch1"
+                  style={{ width: 120 }}
+                  onChange={this.handleChangeChapter}
+                  options={[
+                    {
+                      label: <span>manager</span>,
+                      title: 'manager',
+                      options: [
+                        { label: <span>Jack</span>, value: 'Jack' },
+                        { label: <span>Lucy</span>, value: 'Lucy' },
+                      ],
+                    },
+                    {
+                      label: <span>engineer</span>,
+                      title: 'engineer',
+                      options: [
+                        { label: <span>Chloe</span>, value: 'Chloe' },
+                        { label: <span>Lucas</span>, value: 'Lucas' },
+                      ],
+                    },
+                  ]}
+                />
+                <KnowledgePoints></KnowledgePoints>
+              </Content>
               {shouldShowSelection ? (
                 <SelectionCount>{selectionCount}</SelectionCount>
               ) : null}
