@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react';
 
 import ReactCrop, {
   centerCrop,
@@ -6,13 +6,13 @@ import ReactCrop, {
   Crop,
   PixelCrop,
   convertToPixelCrop,
-} from 'react-image-crop'
-import { canvasPreview } from './canvasPreview'
-import { useDebounceEffect } from './useDebounceEffect'
+} from 'react-image-crop';
+import { canvasPreview } from './canvasPreview';
+import { useDebounceEffect } from './useDebounceEffect';
 
-import 'react-image-crop/dist/ReactCrop.css'
-import '../../global/typedef'
-import getRatio from '../../utils/screen'
+import 'react-image-crop/dist/ReactCrop.css';
+import '../../global/typedef';
+import getRatio from '../../utils/screen';
 // import { ImageProps } from 'antd'
 
 // This is to demonstate how to make and center a % aspect crop
@@ -20,7 +20,7 @@ import getRatio from '../../utils/screen'
 function centerAspectCrop(
   mediaWidth: number,
   mediaHeight: number,
-  aspect: number,
+  aspect: number
 ) {
   return centerCrop(
     makeAspectCrop(
@@ -30,47 +30,47 @@ function centerAspectCrop(
       },
       aspect,
       mediaWidth,
-      mediaHeight,
+      mediaHeight
     ),
     mediaWidth,
-    mediaHeight,
-  )
+    mediaHeight
+  );
 }
 
-export default function ImgCrop(imgurl:string) {
-  const [imgSrc, setImgSrc] = useState('')
-  const previewCanvasRef = useRef<HTMLCanvasElement>(null)
-  const imgRef = useRef<HTMLImageElement>(null)
-  const hiddenAnchorRef = useRef<HTMLAnchorElement>(null)
-  const blobUrlRef = useRef('')
-  const [crop, setCrop] = useState<Crop>()
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
-  const [scale, setScale] = useState(1)
-  const [rotate, setRotate] = useState(0)
-  const [aspect, setAspect] = useState<number | undefined>(16 / 9)
+export default function ImgCrop(imgurl: string) {
+  const [imgSrc, setImgSrc] = useState('');
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const hiddenAnchorRef = useRef<HTMLAnchorElement>(null);
+  const blobUrlRef = useRef('');
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const [scale, setScale] = useState(1);
+  const [rotate, setRotate] = useState(0);
+  const [aspect, setAspect] = useState<number | undefined>(16 / 9);
 
-  useEffect(()=>{
-    console.log(imgurl)
-    setImgSrc(imgurl.imgurl||'')
-  },[])
+  useEffect(() => {
+    console.log(imgurl);
+    setImgSrc(imgurl.imgurl || '');
+  }, [imgurl]);
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
-      setCrop(undefined) // Makes crop preview update between images.
-      const reader = new FileReader()
+      setCrop(undefined); // Makes crop preview update between images.
+      const reader = new FileReader();
       reader.addEventListener('load', () =>
-        setImgSrc(reader.result?.toString() || ''),
-      )
-      reader.readAsDataURL(e.target.files[0])
+        setImgSrc(reader.result?.toString() || '')
+      );
+      reader.readAsDataURL(e.target.files[0]);
     }
   }
 
   function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
-      const { width, height } = e.currentTarget
-      setCrop({x:0,y:0,width:width,height:height,unit:'px'})
-      let ratio  = getRatio()
-      console.log('ratio',ratio)
-      // setScale(100/ratio)
+    const { width, height } = e.currentTarget;
+    setCrop({ x: 0, y: 0, width: width, height: height, unit: 'px' });
+    let ratio = getRatio();
+    console.log('ratio', ratio);
+    // setScale(100/ratio)
 
     // if (aspect) {
     //   const { width, height } = e.currentTarget
@@ -79,27 +79,27 @@ export default function ImgCrop(imgurl:string) {
   }
 
   async function onDownloadCropClick() {
-    const image = imgRef.current
-    const previewCanvas = previewCanvasRef.current
+    const image = imgRef.current;
+    const previewCanvas = previewCanvasRef.current;
     if (!image || !previewCanvas || !completedCrop) {
-      throw new Error('Crop canvas does not exist')
+      throw new Error('Crop canvas does not exist');
     }
 
     // This will size relative to the uploaded image
     // size. If you want to size according to what they
     // are looking at on screen, remove scaleX + scaleY
-    const scaleX = image.naturalWidth / image.width
-    const scaleY = image.naturalHeight / image.height
-    console.log('scalex',scaleX,',',scaleY)
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    console.log('scalex', scaleX, ',', scaleY);
 
-    console.log(scaleX,'c',scaleY)
+    console.log(scaleX, 'c', scaleY);
     const offscreen = new OffscreenCanvas(
       completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
-    )
-    const ctx = offscreen.getContext('2d')
+      completedCrop.height * scaleY
+    );
+    const ctx = offscreen.getContext('2d');
     if (!ctx) {
-      throw new Error('No 2d context')
+      throw new Error('No 2d context');
     }
 
     ctx.drawImage(
@@ -111,13 +111,13 @@ export default function ImgCrop(imgurl:string) {
       0,
       0,
       offscreen.width,
-      offscreen.height,
-    )
+      offscreen.height
+    );
     // You might want { type: "image/jpeg", quality: <0 to 1> } to
     // reduce image size
     const blob = await offscreen.convertToBlob({
-      type: 'image/png'
-    })
+      type: 'image/png',
+    });
     function blobToBase64(blob) {
       return new Promise((resolve, _) => {
         const reader = new FileReader();
@@ -125,18 +125,18 @@ export default function ImgCrop(imgurl:string) {
         reader.readAsDataURL(blob);
       });
     }
-    let imgbase64= await blobToBase64(blob)
+    let imgbase64 = await blobToBase64(blob);
 
-    console.log(imgbase64)
-    
+    console.log(imgbase64);
+
     if (blobUrlRef.current) {
-      URL.revokeObjectURL(blobUrlRef.current)
+      URL.revokeObjectURL(blobUrlRef.current);
     }
-    blobUrlRef.current = URL.createObjectURL(blob)
+    blobUrlRef.current = URL.createObjectURL(blob);
 
     if (hiddenAnchorRef.current) {
-      hiddenAnchorRef.current.href = blobUrlRef.current
-      hiddenAnchorRef.current.click()
+      hiddenAnchorRef.current.href = blobUrlRef.current;
+      hiddenAnchorRef.current.click();
     }
   }
 
@@ -154,27 +154,27 @@ export default function ImgCrop(imgurl:string) {
           previewCanvasRef.current,
           completedCrop,
           scale,
-          rotate,
-        )
+          rotate
+        );
       }
     },
     100,
-    [completedCrop, scale, rotate],
-  )
+    [completedCrop, scale, rotate]
+  );
 
   function handleToggleAspectClick() {
     if (aspect) {
-      setAspect(undefined)
+      setAspect(undefined);
     } else {
-      setAspect(undefined)
+      setAspect(undefined);
       // setAspect(16 / 9)
 
       if (imgRef.current) {
-        const { width, height } = imgRef.current
-        const newCrop = centerAspectCrop(width, height, 16 / 9)
-        setCrop(newCrop)
+        const { width, height } = imgRef.current;
+        const newCrop = centerAspectCrop(width, height, 16 / 9);
+        setCrop(newCrop);
         // Updates the preview
-        setCompletedCrop(convertToPixelCrop(newCrop, width, height))
+        setCompletedCrop(convertToPixelCrop(newCrop, width, height));
       }
     }
   }
@@ -267,5 +267,5 @@ export default function ImgCrop(imgurl:string) {
         </>
       )}
     </div>
-  )
+  );
 }

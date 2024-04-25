@@ -33,4 +33,12 @@ export interface QuoteMap {
 export interface Task {
   id: Id;
   content: string;
+  question: Blob;
+  answer: Blob;
+  choicAnswer: boolean;
+  subject: string;
+  grade: string;
+  chapter: string;
+  tips: string[];
+  difficulty: number;
 }

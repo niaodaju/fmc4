@@ -16,6 +16,8 @@ import { grid, borderRadius } from '../constants';
 import type { Id, Task as TaskType } from '../types';
 import { Rate, Select } from 'antd';
 import KnowledgePoints from './knowledgePoint';
+import ImgCrop from '../imagecrop/imgCrop';
+import { url } from 'inspector';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
 const primaryButton = 0;
@@ -234,7 +236,7 @@ export default class Task extends Component<Props> {
             <Container
               ref={provided.innerRef}
               {...provided.draggableProps}
-              // {...provided.dragHandleProps}
+              {...provided.dragHandleProps}
               onClick={this.onClick}
               onTouchEnd={this.onTouchEnd}
               onKeyDown={(event: KeyboardEvent<HTMLDivElement>) =>
@@ -244,7 +246,7 @@ export default class Task extends Component<Props> {
               isSelected={isSelected}
               isGhosting={isGhosting}
             >
-              <Handle {...provided.dragHandleProps}></Handle>
+              {/* <Handle {...provided.dragHandleProps}></Handle> */}
               <Content>
                 {task.content}
                 <Select
@@ -293,6 +295,8 @@ export default class Task extends Component<Props> {
                   ]}
                 />
                 <KnowledgePoints></KnowledgePoints>
+                <Rate count={3}></Rate>
+                <ImgCrop imgurl={URL.createObjectURL(task.question)}></ImgCrop>
               </Content>
               {shouldShowSelection ? (
                 <SelectionCount>{selectionCount}</SelectionCount>

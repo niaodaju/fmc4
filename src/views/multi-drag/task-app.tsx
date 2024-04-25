@@ -6,13 +6,12 @@ import type {
   DropResult,
   DraggableLocation,
 } from '@hello-pangea/dnd';
-import initial from './data';
+import initial, { addNewTask } from './data';
 import Column from './column';
 import type { Result as ReorderResult } from './utils';
 import { mutliDragAwareReorder, multiSelectTo as multiSelect } from './utils';
 import type { Task, Id } from '../types';
 import type { Entities } from './types';
-
 const Container = styled.div`
   display: flex;
   user-select: none;
@@ -27,7 +26,7 @@ interface State {
 
 const getTasks = (entities: Entities, columnId: Id): Task[] =>
   entities.columns[columnId].taskIds.map(
-    (taskId: Id): Task => entities.tasks[taskId],
+    (taskId: Id): Task => entities.tasks[taskId]
   );
 export default class TaskApp extends Component<unknown, State> {
   state: State = {
@@ -36,22 +35,29 @@ export default class TaskApp extends Component<unknown, State> {
     draggingTaskId: null,
   };
 
+  AddQuestionImage = (imageBlob: Blob) => {
+    const old: State = { ...this.state };
+    addNewTask(old.entities, imageBlob);
+    this.setState(old);
+  };
   componentDidMount(): void {
     window.addEventListener('click', this.onWindowClick);
     window.addEventListener('keydown', this.onWindowKeyDown);
     window.addEventListener('touchend', this.onWindowTouchEnd);
+    window.addEventListener('paste', this.handlePaste);
   }
 
   componentWillUnmount(): void {
     window.removeEventListener('click', this.onWindowClick);
     window.removeEventListener('keydown', this.onWindowKeyDown);
     window.removeEventListener('touchend', this.onWindowTouchEnd);
+    window.removeEventListener('paste', this.onWindowTouchEnd);
   }
 
   onDragStart = (start: DragStart): void => {
     const id: string = start.draggableId;
     const selected: Id | undefined | null = this.state.selectedTaskIds.find(
-      (taskId: Id): boolean => taskId === id,
+      (taskId: Id): boolean => taskId === id
     );
 
     // if dragging an item that is not selected - unselect all items
@@ -165,7 +171,7 @@ export default class TaskApp extends Component<unknown, State> {
     const updated: Id[] | undefined | null = multiSelect(
       this.state.entities,
       this.state.selectedTaskIds,
-      newTaskId,
+      newTaskId
     );
 
     if (updated == null) {
@@ -183,29 +189,61 @@ export default class TaskApp extends Component<unknown, State> {
     });
   };
 
+  handlePaste = async (event: any) => {
+    console.log('paste is called');
+    try {
+      if (!navigator.clipboard) {
+        console.error('Clipboard API not available');
+        return;
+      }
+
+      const clipboardItems = await navigator.clipboard.read();
+      for (const clipboardItem of clipboardItems) {
+        const imageTypes = clipboardItem.types.find((type) =>
+          type.startsWith('image/')
+        );
+
+        if (imageTypes) {
+          const blob = await clipboardItem.getType(imageTypes);
+
+          this.AddQuestionImage(blob);
+          // addNewTask(blob);
+          // var old = imageblob.slice();
+          // old.push(blob);
+          // setImageblob(old);
+
+          break; // Assuming we need the first image
+        }
+      }
+    } catch (err) {
+      console.error('Failed to read clipboard:', err);
+    }
+  };
   render(): ReactElement {
     const entities: Entities = this.state.entities;
     const selected: Id[] = this.state.selectedTaskIds;
     return (
-      <DragDropContext
-        onDragStart={this.onDragStart}
-        onDragEnd={this.onDragEnd}
-      >
-        <Container>
-          {entities.columnOrder.map((columnId: Id) => (
-            <Column
-              column={entities.columns[columnId]}
-              tasks={getTasks(entities, columnId)}
-              selectedTaskIds={selected}
-              key={columnId}
-              draggingTaskId={this.state.draggingTaskId}
-              toggleSelection={this.toggleSelection}
-              toggleSelectionInGroup={this.toggleSelectionInGroup}
-              multiSelectTo={this.multiSelectTo}
-            />
-          ))}
-        </Container>
-      </DragDropContext>
+      <div onPaste={this.handlePaste}>
+        <DragDropContext
+          onDragStart={this.onDragStart}
+          onDragEnd={this.onDragEnd}
+        >
+          <Container>
+            {entities.columnOrder.map((columnId: Id) => (
+              <Column
+                column={entities.columns[columnId]}
+                tasks={getTasks(entities, columnId)}
+                selectedTaskIds={selected}
+                key={columnId}
+                draggingTaskId={this.state.draggingTaskId}
+                toggleSelection={this.toggleSelection}
+                toggleSelectionInGroup={this.toggleSelectionInGroup}
+                multiSelectTo={this.multiSelectTo}
+              />
+            ))}
+          </Container>
+        </DragDropContext>
+      </div>
     );
   }
 }
