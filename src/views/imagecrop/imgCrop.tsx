@@ -52,7 +52,7 @@ export default function ImgCrop(imgurl: string) {
   useEffect(() => {
     console.log(imgurl);
     setImgSrc(imgurl.imgurl || '');
-  }, [imgurl]);
+  }, []);
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
@@ -219,8 +219,8 @@ export default function ImgCrop(imgurl: string) {
           onComplete={(c) => setCompletedCrop(c)}
           // aspect={aspect}
           aspect={undefined}
-          // minWidth={400}
-          minHeight={100}
+          minWidth={50}
+          minHeight={40}
           // circularCrop
         >
           <img

@@ -12,6 +12,7 @@ import type { Result as ReorderResult } from './utils';
 import { mutliDragAwareReorder, multiSelectTo as multiSelect } from './utils';
 import type { Task, Id } from '../types';
 import type { Entities } from './types';
+import { Button } from 'antd';
 const Container = styled.div`
   display: flex;
   user-select: none;
@@ -28,12 +29,17 @@ const getTasks = (entities: Entities, columnId: Id): Task[] =>
   entities.columns[columnId].taskIds.map(
     (taskId: Id): Task => entities.tasks[taskId]
   );
+
 export default class TaskApp extends Component<unknown, State> {
   state: State = {
     entities: initial,
     selectedTaskIds: [],
     draggingTaskId: null,
   };
+
+  DelSelectedTask() {
+    if (this.state.selectedTaskIds.length === 0) return;
+  }
 
   AddQuestionImage = (imageBlob: Blob) => {
     const old: State = { ...this.state };
@@ -51,7 +57,8 @@ export default class TaskApp extends Component<unknown, State> {
     window.removeEventListener('click', this.onWindowClick);
     window.removeEventListener('keydown', this.onWindowKeyDown);
     window.removeEventListener('touchend', this.onWindowTouchEnd);
-    window.removeEventListener('paste', this.onWindowTouchEnd);
+    window.removeEventListener('paste', this.handlePaste);
+    console.log('task app paste event removed');
   }
 
   onDragStart = (start: DragStart): void => {
@@ -109,6 +116,7 @@ export default class TaskApp extends Component<unknown, State> {
     if (event.defaultPrevented) {
       return;
     }
+    console.log('clicked');
     this.unselectAll();
   };
 
@@ -190,7 +198,12 @@ export default class TaskApp extends Component<unknown, State> {
   };
 
   handlePaste = async (event: any) => {
-    console.log('paste is called');
+    if (this.state.selectedTaskIds.length > 0) {
+      console.log(this.state.selectedTaskIds);
+      return;
+    }
+
+    console.log('task app paste is called');
     try {
       if (!navigator.clipboard) {
         console.error('Clipboard API not available');
@@ -219,11 +232,15 @@ export default class TaskApp extends Component<unknown, State> {
       console.error('Failed to read clipboard:', err);
     }
   };
+  handleDelClick = (event: any) => {
+    console.log(event);
+  };
   render(): ReactElement {
     const entities: Entities = this.state.entities;
     const selected: Id[] = this.state.selectedTaskIds;
     return (
-      <div onPaste={this.handlePaste}>
+      <div>
+        <Button onClick={this.handleDelClick}>删除</Button>
         <DragDropContext
           onDragStart={this.onDragStart}
           onDragEnd={this.onDragEnd}

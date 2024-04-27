@@ -57,4 +57,5 @@ export function addNewTask(ents: Entities, questiogImgBlob: Blob) {
   ents.columns[todo.id].taskIds.push(newTask.id);
 }
 
+export function deleteTasks();
 export default entities;

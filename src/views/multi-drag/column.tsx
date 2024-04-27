@@ -23,7 +23,7 @@ interface Props {
 }
 
 const Container = styled.div`
-  width: 300px;
+  width: 100vw;
   margin: ${grid}px;
   border-radius: ${borderRadius}px;
   border: 1px solid ${colors.N100};
@@ -60,7 +60,7 @@ const getSelectedMap = memoizeOne((selectedTaskIds: Id[]) =>
   selectedTaskIds.reduce((previous: TaskIdMap, current: Id): TaskIdMap => {
     previous[current] = true;
     return previous;
-  }, {}),
+  }, {})
 );
 
 export default class Column extends Component<Props> {
@@ -81,7 +81,7 @@ export default class Column extends Component<Props> {
             >
               {tasks.map((task: TaskType, index: number) => {
                 const isSelected = Boolean(
-                  getSelectedMap(selectedTaskIds)[task.id],
+                  getSelectedMap(selectedTaskIds)[task.id]
                 );
                 const isGhosting: boolean =
                   isSelected &&
