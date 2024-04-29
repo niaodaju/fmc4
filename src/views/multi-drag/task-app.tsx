@@ -6,23 +6,31 @@ import type {
   DropResult,
   DraggableLocation,
 } from '@hello-pangea/dnd';
-import initial, { addNewTask } from './data';
+import initial, {
+  addNewTask,
+  deleteTasks,
+  showTrash,
+  showQuestionList,
+  restoreTasks,
+} from './data';
 import Column from './column';
 import type { Result as ReorderResult } from './utils';
 import { mutliDragAwareReorder, multiSelectTo as multiSelect } from './utils';
 import type { Task, Id } from '../types';
 import type { Entities } from './types';
-import { Button } from 'antd';
+import { Button, Radio, RadioChangeEvent } from 'antd';
 const Container = styled.div`
   display: flex;
   user-select: none;
 `;
 
+type curBoxType = 'quesList' | 'trash';
 interface State {
   entities: Entities;
   selectedTaskIds: Id[];
   // sad times
   draggingTaskId: Id | undefined | null;
+  curBox: curBoxType;
 }
 
 const getTasks = (entities: Entities, columnId: Id): Task[] =>
@@ -35,6 +43,7 @@ export default class TaskApp extends Component<unknown, State> {
     entities: initial,
     selectedTaskIds: [],
     draggingTaskId: null,
+    curBox: 'quesList',
   };
 
   DelSelectedTask() {
@@ -51,6 +60,8 @@ export default class TaskApp extends Component<unknown, State> {
     window.addEventListener('keydown', this.onWindowKeyDown);
     window.addEventListener('touchend', this.onWindowTouchEnd);
     window.addEventListener('paste', this.handlePaste);
+    console.log('componentDidMount');
+    console.log(this.state.entities.columns['todo'].taskIds);
   }
 
   componentWillUnmount(): void {
@@ -58,7 +69,8 @@ export default class TaskApp extends Component<unknown, State> {
     window.removeEventListener('keydown', this.onWindowKeyDown);
     window.removeEventListener('touchend', this.onWindowTouchEnd);
     window.removeEventListener('paste', this.handlePaste);
-    console.log('task app paste event removed');
+    console.log('componentWillUnmount');
+    console.log(this.state.entities.columns['todo'].taskIds);
   }
 
   onDragStart = (start: DragStart): void => {
@@ -220,10 +232,6 @@ export default class TaskApp extends Component<unknown, State> {
           const blob = await clipboardItem.getType(imageTypes);
 
           this.AddQuestionImage(blob);
-          // addNewTask(blob);
-          // var old = imageblob.slice();
-          // old.push(blob);
-          // setImageblob(old);
 
           break; // Assuming we need the first image
         }
@@ -233,14 +241,49 @@ export default class TaskApp extends Component<unknown, State> {
     }
   };
   handleDelClick = (event: any) => {
-    console.log(event);
+    // console.log(this.state);
+    if (this.state.selectedTaskIds && this.state.curBox === 'quesList') {
+      const old: State = { ...this.state };
+      deleteTasks(old.entities, old.selectedTaskIds);
+      this.setState(old);
+    }
   };
+
+  handleListChange = (e: RadioChangeEvent) => {
+    const old: State = { ...this.state };
+    console.log(e.target.value);
+    if (e.target.value === 'quesList') {
+      showQuestionList(old.entities);
+      old.curBox = 'quesList';
+    } else {
+      showTrash(old.entities);
+      old.curBox = 'trash';
+    }
+    this.setState(old);
+  };
+  handleRestoreClick = (event: any) => {
+    if (this.state.selectedTaskIds && this.state.curBox === 'trash') {
+      const old: State = { ...this.state };
+      restoreTasks(old.entities, old.selectedTaskIds);
+      this.setState(old);
+    }
+  };
+
   render(): ReactElement {
     const entities: Entities = this.state.entities;
     const selected: Id[] = this.state.selectedTaskIds;
     return (
       <div>
+        <Radio.Group
+          defaultValue="quesList"
+          buttonStyle="solid"
+          onChange={this.handleListChange}
+        >
+          <Radio.Button value="quesList">题目列表</Radio.Button>
+          <Radio.Button value="trash">垃圾箱</Radio.Button>
+        </Radio.Group>
         <Button onClick={this.handleDelClick}>删除</Button>
+        <Button onClick={this.handleRestoreClick}>还原</Button>
         <DragDropContext
           onDragStart={this.onDragStart}
           onDragEnd={this.onDragEnd}

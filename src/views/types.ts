@@ -41,4 +41,5 @@ export interface Task {
   chapter: string;
   tips: string[];
   difficulty: number;
+  deleted: boolean;
 }
