@@ -1,9 +1,11 @@
 import type { Column, Entities, TaskMap } from './types';
 import type { Task, Id } from '../types';
+import { endianness } from 'os';
 // var backupQuestList: Id[] = [];
 // var deletedTask: Id[] = [];
 // eslint-disable-next-line no-restricted-syntax
 const tasks: Task[] = [];
+const questList: Id[] = [];
 
 const taskMap: TaskMap = tasks.reduce(
   (previous: TaskMap, current: Task): TaskMap => {
@@ -16,7 +18,11 @@ const taskMap: TaskMap = tasks.reduce(
 const todo: Column = {
   id: 'todo',
   title: '题目列表',
-  taskIds: tasks.map((task: Task): Id => task.id),
+  taskIds: (() => {
+    console.log('here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    return tasks.map((task: Task): Id => task.id);
+  })(),
+  // taskIds: questList,
 };
 
 // const done: Column = {
@@ -49,6 +55,7 @@ export function addNewTask(ents: Entities, questiogImgBlob: Blob) {
     deleted: false,
   };
   tasks.push(newTask);
+  // console.log(ents.tasks);
   ents.tasks[newTask.id] = newTask;
   ents.columns[todo.id].taskIds.push(newTask.id);
 }
@@ -87,4 +94,21 @@ export function restoreTasks(ents: Entities, restoreTaskIds: Id[]) {
     ents.columns['todo'].taskIds.push(id);
   });
 }
+
+export function backupCloumTaskIds(taskIDs: Id[]) {
+  questList = [...taskIDs];
+  console.log('qesttList', questList);
+}
+
+export function getInitialData(ents: Entities) {
+  ents.columns[todo.id] = questList;
+  return ents;
+}
+export function compareData(ents: Entities) {
+  console.log('class', ents.columns.todo.taskIds);
+  console.log('data', entities.columns.todo.taskIds);
+  console.log('ents === entities', ents === entities);
+  console.log(ents.tasks === entities.tasks);
+}
+export { questList };
 export default entities;

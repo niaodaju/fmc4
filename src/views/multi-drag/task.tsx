@@ -296,7 +296,12 @@ export default class Task extends Component<Props> {
                 />
                 <KnowledgePoints></KnowledgePoints>
                 <Rate count={3}></Rate>
-                <ImgCrop imgurl={URL.createObjectURL(task.question)}></ImgCrop>
+                {task.question && (
+                  <ImgCrop
+                    imgurl={URL.createObjectURL(task.question)}
+                  ></ImgCrop>
+                )}
+                {/* <ImgCrop imgurl={URL.createObjectURL(task.question)}></ImgCrop> */}
               </Content>
               {shouldShowSelection ? (
                 <SelectionCount>{selectionCount}</SelectionCount>

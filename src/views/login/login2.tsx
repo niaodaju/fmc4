@@ -4,9 +4,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import './login.css';
-
 export default function Login2() {
   const nav = useNavigate();
+  const handleOnClick = () => {
+    // console.log(questList);
+  };
   const onFinish = async (values: any) => {
     try {
       store.dispatch({
@@ -83,6 +85,8 @@ export default function Login2() {
       <Link to="/upload">上传</Link>
       <br></br>
       <Link to="/drag">拖放</Link>
+      <br></br>
+      <Button onClick={handleOnClick}>test</Button>
     </Form>
   );
 }

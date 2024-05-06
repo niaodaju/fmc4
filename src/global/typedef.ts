@@ -1,28 +1,36 @@
 export type Quiz = {
-    image:Blob,
-    subject:string,
-    grade:string,
-    chapter:string,
-    hard:number
- };
- 
-
+  image: Blob;
+  subject: string;
+  grade: string;
+  chapter: string;
+  hard: number;
+};
 
 export interface SetUser {
-   (name: string, age: number): void;
- }
- 
-export type imageSize = {
-   width:number,
-   height:number
+  (name: string, age: number): void;
 }
 
-export interface imageObj{
-   url:string;
-   blob:Blob;
- }
- 
+export type imageSize = {
+  width: number;
+  height: number;
+};
+
+export interface imageObj {
+  url: string;
+  blob: Blob;
+}
+
 export interface ImageProps {
-   imgblob:Blob;
- }
- 
+  imgblob: Blob;
+}
+export interface Question {
+  id: string;
+  question: Blob;
+  answer: Blob;
+  choicAnswer: boolean;
+  subject: string;
+  grade: string;
+  chapter: string;
+  tips: string[];
+  difficulty: number;
+}

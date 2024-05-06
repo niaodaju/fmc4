@@ -12,6 +12,7 @@ import initial, {
   showTrash,
   showQuestionList,
   restoreTasks,
+  compareData,
 } from './data';
 import Column from './column';
 import type { Result as ReorderResult } from './utils';
@@ -61,7 +62,14 @@ export default class TaskApp extends Component<unknown, State> {
     window.addEventListener('touchend', this.onWindowTouchEnd);
     window.addEventListener('paste', this.handlePaste);
     console.log('componentDidMount');
-    console.log(this.state.entities.columns['todo'].taskIds);
+    // console.log(this.state.entities.columns['todo'].taskIds);
+    // let newobj = JSON.parse(localStorage.getItem('draglist'));
+    // console.log(newobj);
+    // if (newobj) {
+    //   const old = { ...this.state };
+    //   old.entities.columns['todo'].taskIds = newobj;
+    //   this.setState(old);
+    // }
   }
 
   componentWillUnmount(): void {
@@ -70,7 +78,11 @@ export default class TaskApp extends Component<unknown, State> {
     window.removeEventListener('touchend', this.onWindowTouchEnd);
     window.removeEventListener('paste', this.handlePaste);
     console.log('componentWillUnmount');
-    console.log(this.state.entities.columns['todo'].taskIds);
+    // console.log(this.state.entities.columns['todo'].taskIds);
+    // localStorage.setItem(
+    //   'draglist',
+    //   JSON.stringify(this.state.entities.columns['todo'].taskIds)
+    // );
   }
 
   onDragStart = (start: DragStart): void => {
@@ -262,11 +274,7 @@ export default class TaskApp extends Component<unknown, State> {
     this.setState(old);
   };
   handleRestoreClick = (event: any) => {
-    if (this.state.selectedTaskIds && this.state.curBox === 'trash') {
-      const old: State = { ...this.state };
-      restoreTasks(old.entities, old.selectedTaskIds);
-      this.setState(old);
-    }
+    compareData(this.state.entities);
   };
 
   render(): ReactElement {
