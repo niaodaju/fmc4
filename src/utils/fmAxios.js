@@ -1,5 +1,5 @@
 import axios from 'axios'
-import fm from '../constants/common'
+import fm from '../global/common'
 
 
 export default function initAxios(token){

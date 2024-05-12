@@ -1,10 +1,10 @@
-export type Quiz = {
-  image: Blob;
-  subject: string;
-  grade: string;
-  chapter: string;
-  hard: number;
-};
+// export type Quiz = {
+//   image: Blob;
+//   subject: string;
+//   grade: string;
+//   chapter: string;
+//   hard: number;
+// };
 
 export interface SetUser {
   (name: string, age: number): void;
@@ -23,11 +23,11 @@ export interface imageObj {
 export interface ImageProps {
   imgblob: Blob;
 }
-export interface Question {
+export interface Quiz {
   id: string;
   question: Blob;
   answer: Blob;
-  choicAnswer: boolean;
+  AnswerChoice: number;
   subject: string;
   grade: string;
   chapter: string;

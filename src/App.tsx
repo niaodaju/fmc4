@@ -4,7 +4,7 @@ import axios from 'axios';
 import './App.css';
 import MRoute from './router/rindex';
 import { HashRouter, Route, Routes } from 'react-router-dom';
-import fm from './constants/common';
+import fm from './global/common';
 function App() {
   useEffect(() => {
     axios.defaults.baseURL = fm.HTTP;

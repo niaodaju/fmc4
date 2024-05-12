@@ -253,7 +253,9 @@ export default class Task extends Component<Props> {
                   tabIndex="-1"
                   defaultValue="math"
                   style={{ width: 120 }}
-                  onChange={this.handleChangeSubject}
+                  onChange={(e) => {
+                    console.log(e);
+                  }}
                   options={[
                     { value: 'math', label: '数学' },
                     { value: 'phy', label: '物理' },

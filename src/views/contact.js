@@ -1,6 +1,6 @@
 import React from 'react'
 import contact from "../resource/contact.png"
-import "../css/common.css"
+import "../global /common.css"
 export default function Contact() {
   return (
     <div className="div_center">

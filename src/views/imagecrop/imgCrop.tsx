@@ -37,7 +37,7 @@ function centerAspectCrop(
   );
 }
 
-export default function ImgCrop(imgurl: string) {
+export default function ImgCrop({ imgurl }: { imgurl: string }) {
   const [imgSrc, setImgSrc] = useState('');
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -50,8 +50,8 @@ export default function ImgCrop(imgurl: string) {
   const [aspect, setAspect] = useState<number | undefined>(16 / 9);
 
   useEffect(() => {
-    console.log(imgurl);
-    setImgSrc(imgurl.imgurl || '');
+    console.log('ImgCrop', imgurl);
+    setImgSrc(imgurl || '');
   }, []);
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {

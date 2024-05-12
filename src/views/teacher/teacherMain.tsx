@@ -5,15 +5,17 @@ import getImageSize from '../../utils/image';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import ImgCrop from '../imagecrop/imgCrop';
-import { Modal, List } from 'antd';
+import { Button, Modal, List, Message } from 'antd';
 import type { ProColumns } from '@ant-design/pro-components';
 import { DragSortTable } from '@ant-design/pro-components';
 import { CheckCard } from '@ant-design/pro-components';
-
+import Question from '../question/ui';
+import { Quiz } from '../../global/typedef';
+import qstore from './data';
 // import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 const TeacherMain: React.FC = () => {
-  const [imageblob, setImageblob] = useState<Blob[]>([]);
-  const [obj1, setObj1] = useState<any>({ a: 1 });
+  const [quesList, setQuesList] = useState<Quiz[]>([]);
+  const [selectedList, setSelectedList] = useState<number[]>([]);
   const handlePaste = async (event: any) => {
     console.log('paste is called');
     try {
@@ -30,15 +32,21 @@ const TeacherMain: React.FC = () => {
 
         if (imageTypes) {
           const blob = await clipboardItem.getType(imageTypes);
-          var old = imageblob.slice();
-          old.push(blob);
-          setImageblob(old);
+          var old = quesList.slice();
+          const nquiz: Quiz = {
+            id: 'id' + old.length,
+            question: blob,
+            answer: blob,
+            AnswerChoice: 0,
+            subject: 'subject',
+            grade: 'grade',
+            chapter: URL.createObjectURL(blob),
+            tips: ['tips'],
+            difficulty: 1,
+          };
+          old.push(nquiz);
+          setQuesList(old);
 
-          // const url = URL.createObjectSURL(blob);
-          // console.log('url',url)
-          // var imageold = imageSrc.slice()
-          // imageold.push({url,blob})
-          // setImageSrc(imageold);
           break; // Assuming we need the first image
         }
       }
@@ -47,26 +55,32 @@ const TeacherMain: React.FC = () => {
     }
   };
 
-  const handleClick = async (event: any) => {
-    const b = 33;
-    setObj1({ b });
-    setTimeout(() => {
-      console.log(obj1);
-    }, 0);
+  const handleUpLoad = async (event: any) => {
+    console.log(quesList[0].subject);
   };
-  const handleClick2 = async (event: any) => {
+  const handleDelete = async (event: any) => {
     console.log(obj1);
+  };
+
+  const handleListChange = (value: any) => {
+    console.log(value);
+    setSelectedList(value);
   };
   return (
     <div onPaste={handlePaste}>
       TeacherMain
-      <button onClick={handleClick2}>查看ojb</button>
-      <button onClick={handleClick}>上传</button>
-      <CheckCard.Group multiple style={{ width: '100%' }}>
-        {imageblob.map((item, index) => (
-          <CheckCard value={index} style={{ width: '100%' }}>
-            <img src={URL.createObjectURL(item)} alt="akdk" />
-            <ImgCrop imgurl={URL.createObjectURL(item)}></ImgCrop>
+      <Button onClick={handleDelete}>删除</Button>
+      <Button onClick={handleUpLoad}>上传</Button>
+      <CheckCard.Group
+        multiple
+        style={{ width: '100%' }}
+        onChange={handleListChange}
+      >
+        {quesList.map((item, index) => (
+          <CheckCard value={index} style={{ width: '100%' }} key={index}>
+            <Question value={item} quiz={item} />
+            {/* <img src={URL.createObjectURL(item.question)} alt="akdk" /> */}
+            {/* <ImgCrop imgurl={URL.createObjectURL(item.question)}></ImgCrop> */}
           </CheckCard>
         ))}
       </CheckCard.Group>
