@@ -3,12 +3,11 @@ import { Rate, Select, Mentions } from 'antd';
 import 'react-image-crop/dist/ReactCrop.css';
 import ImgCrop from '../imagecrop/imgCrop';
 import { Quiz } from '../../global/typedef';
-export default function Question({ value, quiz }: { value: Quiz; quiz: Quiz }) {
+export default function Question({ value }: { value: Quiz }) {
   const [mention, setMention] = useState('hello world');
   useEffect(() => {
     console.log(typeof value);
     console.log('Question', value);
-    console.log('quiz', quiz);
   }, []);
   return (
     <div>
@@ -31,6 +30,7 @@ export default function Question({ value, quiz }: { value: Quiz; quiz: Quiz }) {
         style={{ width: 120 }}
         onChange={(val) => {
           console.log(val);
+          value.grade = val;
         }}
         options={[
           { value: 'g7', label: '七年级' },
@@ -44,6 +44,7 @@ export default function Question({ value, quiz }: { value: Quiz; quiz: Quiz }) {
         style={{ width: 120 }}
         onChange={(val) => {
           console.log(val);
+          value.chapter = val;
         }}
         options={[
           {
@@ -65,8 +66,14 @@ export default function Question({ value, quiz }: { value: Quiz; quiz: Quiz }) {
         ]}
       />
       <Mentions value={mention} onChange={setMention} allowClear rows={3} />
-      <Rate count={3}></Rate>
-      <img src={value.chapter} alt="akdk" />
+      <Rate
+        count={3}
+        onChange={(val) => {
+          console.log(val);
+          value.difficulty = val;
+        }}
+      ></Rate>
+      {/* <img src={value.chapter} alt="akdk" /> */}
 
       {/* <image imgurl={URL.createObjectURL(value.question)} /> */}
       <ImgCrop imgurl={value.chapter} />
