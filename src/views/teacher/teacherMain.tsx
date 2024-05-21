@@ -78,9 +78,7 @@ const TeacherMain: React.FC = () => {
       >
         {quesList.map((item, index) => (
           <CheckCard value={index} style={{ width: '100%' }} key={index}>
-            <Question value={item} quiz={item} />
-            {/* <img src={URL.createObjectURL(item.question)} alt="akdk" /> */}
-            {/* <ImgCrop imgurl={URL.createObjectURL(item.question)}></ImgCrop> */}
+            <Question value={item} />
           </CheckCard>
         ))}
       </CheckCard.Group>

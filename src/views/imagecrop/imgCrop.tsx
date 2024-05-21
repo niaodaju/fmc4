@@ -13,6 +13,7 @@ import { useDebounceEffect } from './useDebounceEffect';
 import 'react-image-crop/dist/ReactCrop.css';
 import '../../global/typedef';
 import getRatio from '../../utils/screen';
+import { Button ,Input,Form} from 'antd';
 // import { ImageProps } from 'antd'
 
 // This is to demonstate how to make and center a % aspect crop
@@ -179,10 +180,16 @@ export default function ImgCrop({ imgurl }: { imgurl: string }) {
     }
   }
 
+  const handlePastePic = (e:any)=>{
+    console.log(e);
+  }
+
   return (
     <div className="App">
       <div className="Crop-Controls">
-        <input type="file" accept="image/*" onChange={onSelectFile} />
+        <Form>
+        <Input id='input' type="file" accept="image/*" onChange={onSelectFile} />
+        <Button onClick={handlePastePic}>粘贴</Button> 
         <div>
           <label htmlFor="scale-input">Scale: </label>
           <input
@@ -207,11 +214,11 @@ export default function ImgCrop({ imgurl }: { imgurl: string }) {
           />
         </div>
         <div>
-          <button onClick={handleToggleAspectClick}>
+          <button onClick={handleToggleAspectClick} hidden={true}>
             Toggle aspect {aspect ? 'off' : 'on'}
           </button>
         </div>
-      </div>
+      </Form></div>
       {!!imgSrc && (
         <ReactCrop
           crop={crop}
@@ -246,7 +253,7 @@ export default function ImgCrop({ imgurl }: { imgurl: string }) {
             />
           </div>
           <div>
-            <button onClick={onDownloadCropClick}>Download Crop</button>
+            <button hidden = {true} onClick={onDownloadCropClick}>Download Crop</button>
             {/* <div style={{ fontSize: 12, color: '#666' }}>
               If you get a security error when downloading try opening the
               Preview in a new tab (icon near top right).

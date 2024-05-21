@@ -12,7 +12,7 @@ export default function Question({ value }: { value: Quiz }) {
   return (
     <div>
       <Select
-        tabIndex="-1"
+        tabIndex="0"
         defaultValue="math"
         style={{ width: 120 }}
         onChange={(val) => {
@@ -25,7 +25,7 @@ export default function Question({ value }: { value: Quiz }) {
         ]}
       />
       <Select
-        tabIndex="-1"
+        tabIndex="1"
         defaultValue="g7"
         style={{ width: 120 }}
         onChange={(val) => {
@@ -39,7 +39,7 @@ export default function Question({ value }: { value: Quiz }) {
         ]}
       />
       <Select
-        tabIndex="-1"
+        tabIndex="2"
         defaultValue="ch1"
         style={{ width: 120 }}
         onChange={(val) => {
